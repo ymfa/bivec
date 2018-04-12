@@ -1314,7 +1314,7 @@ void TrainModel() {
     assert(src->num_lines==align_num_lines);
   }
 
-  int save_opt = 0;
+  int save_opt = 2;
   //char sum_vector_file[MAX_STRING];
   //char sum_vector_prefix[MAX_STRING];
   for(cur_iter=start_iter; cur_iter<num_train_iters; cur_iter++){
@@ -1331,6 +1331,7 @@ void TrainModel() {
 
     // Save
     SaveVector(output_prefix, src->lang, src, save_opt);
+    if (is_bi) SaveVector(output_prefix, tgt->lang, tgt, save_opt);
 
     // Eval
     if (eval_freq && cur_iter % eval_freq == 0) {
@@ -1338,7 +1339,6 @@ void TrainModel() {
       eval_mono(src->output_file, src->lang, cur_iter);
 
       if (is_bi) {
-        SaveVector(output_prefix, tgt->lang, tgt, save_opt);
         eval_mono(tgt->output_file, tgt->lang, cur_iter);
         // cldc
         cldc(output_prefix, cur_iter);

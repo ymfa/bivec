@@ -53,3 +53,7 @@ data/*
 *archive*
 *tmp*
 *nohup.out*
+# New additions
+.mypy_cache/
+corpora/*
+embeddings/*
