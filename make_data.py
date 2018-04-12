@@ -1,6 +1,11 @@
+#!/usr/bin/env python3
 import sys, re
 from collections import Counter
 
+if len(sys.argv) < 3:
+  print("Usage: ./make_data.py InputPrefix OutputPrefix [VocabSize]")
+  print("Input files are under corpora/; output files are under data/.")
+  sys.exit()
 prefix = sys.argv[1]
 in_prefix = 'corpora/' + prefix
 out_prefix = 'data/' + prefix
