@@ -164,15 +164,15 @@ print (len(test_multitrad), 'ambigous trad char types in the test cases')
 print (len(test_multisimp), 'ambigous simp char types in the test cases')
 
 
-# In[135]:
+# In[136]:
 
 
 #store test cases
 
-with open('trad_test.json','w') as f:
+with open('../eval/test_cases/trad_test.json','w') as f:
     json.dump(test_multitrad,f)
     
-with open('simp_test.json', 'w') as f:
+with open('../eval/test_cases/simp_test.json', 'w') as f:
     json.dump(test_multisimp, f)
 
 
@@ -191,19 +191,4 @@ with open('./data/simp_train', 'w') as f:
     for line_num in line_nums:
         del simp_lines[line_num]
     f.writelines(simp_lines)
-
-
-# In[77]:
-
-
-a=[1,2,3]
-random.shuffle(a)
-a
-
-
-# In[85]:
-
-
-a=random.shuffle(list(range(10)))
-a
 
