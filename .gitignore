@@ -12,7 +12,7 @@ cldc/data/*
 *word-analogy
 *word2phrase
 *word2vec
-data/cna_cmn/data
+#data/cna_cmn/data/*
 *.ps
 *.out
 *.swp
