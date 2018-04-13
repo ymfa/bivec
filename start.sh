@@ -1,3 +1,4 @@
+#!/bin/bash
 #run in docker: docker run -it --name simp2trad  -p 8888:8888 -v /home/ql261/simp2trad/:/home/simp2trad/ continuum/annoconda3 /bin/bash 
 # add git config name
 git config --global user.email "hey_flora@126.com"
@@ -5,6 +6,7 @@ git config --global user.email "hey_flora@126.com"
 
 # add packages and tensorflow eager in python startup
 apt-get update
+#apt-get install build-essential
 apt-get update && apt-get install procps
 apt-get install vim
 #export PYTHONSTARTUP='/home/context-embed/context-skipgram/PYTHONSTARTUP.py'

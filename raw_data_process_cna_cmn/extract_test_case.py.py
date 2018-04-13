@@ -7,14 +7,20 @@
 
 from collections import defaultdict
 import json
+import sys
+
+simp2trad=sys.argv[1]
+tra2simp=sys.argv[2]
+trad_inf=sys.argv[3]
+simp_inf=sys.argv[4]
 #import simplejson as json
 
 
 # In[5]:
 
 
-simp2trad=json.load(open('./simp2tra.json', 'r'))
-tra2simp=json.load(open('./tra2simp.json', 'r'))
+simp2trad=json.load(open(simp2trad, 'r'))
+tra2simp=json.load(open(tra2simp, 'r'))
 
 
 # In[ ]:
@@ -64,8 +70,8 @@ for chars in trad2multisimp.values():
 
 test_multitrad=defaultdict(list)
 test_multisimp=defaultdict(list)
-trad_lines=open('../corpora/trad_lines').readlines()
-simp_lines=open('../corpora/simp_lines').readlines()
+trad_lines=open(trad_inf).readlines()
+simp_lines=open(simp_inf).readlines()
 lines_num_trad=[]
 lines_num_simp=[]
 

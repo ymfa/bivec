@@ -1,16 +1,16 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
-
+import pickle
 from collections import defaultdict
 import json
 #import simplejson as json
 
 
-# In[5]:
+# In[ ]:
 
 
 simp2trad=json.load(open('./simp2tra.json', 'r'))
@@ -54,6 +54,7 @@ for chars in trad2multisimp.values():
     multisimp.update(chars)
 
 
+simp2multitrad
 
 
 # In[ ]:
@@ -64,8 +65,8 @@ for chars in trad2multisimp.values():
 
 test_multitrad=defaultdict(list)
 test_multisimp=defaultdict(list)
-trad_lines=open('../corpora/trad_lines').readlines()
-simp_lines=open('../corpora/simp_lines').readlines()
+trad_lines=open('./data/trad_lines').readlines()
+simp_lines=open('./data/simp_lines').readlines()
 lines_num_trad=[]
 lines_num_simp=[]
 
@@ -109,6 +110,7 @@ for line in simp_lines:
                     #print (char, line_num,line)
         line_num+=1
 
+test_multitrad
 
 
 # In[15]:
