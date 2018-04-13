@@ -95,7 +95,7 @@ for key in multitrad:
 print('{0} ambiguous trad char test cases'.format(trad_max), '{0} ambigous simp char test cases'.format(simp_max))
 
 
-# In[ ]:
+# In[132]:
 
 
 #generate a random list
@@ -104,7 +104,7 @@ random.shuffle(ran_is)
 print ('generate a random list')
 
 
-# In[127]:
+# In[133]:
 
 
 trad_testcases=0
@@ -149,7 +149,7 @@ for ran_i in ran_is:
         
 
 
-# In[129]:
+# In[134]:
 
 
 
@@ -164,7 +164,7 @@ print (len(test_multitrad), 'ambigous trad char types in the test cases')
 print (len(test_multisimp), 'ambigous simp char types in the test cases')
 
 
-# In[15]:
+# In[135]:
 
 
 #store test cases
