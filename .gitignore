@@ -7,6 +7,7 @@ bivec
 runCLDC
 output/*
 cldc/data/*
+data/data*
 *compute-accuracy
 *distance
 *word-analogy
