@@ -6,6 +6,7 @@ text2vec
 bivec
 runCLDC
 output/*
+outputDir/
 cldc/data/*
 data/
 raw_data_process_cna_cmn/data/
