@@ -64,8 +64,8 @@ for chars in trad2multisimp.values():
 
 test_multitrad=defaultdict(list)
 test_multisimp=defaultdict(list)
-trad_lines=open('./data/trad_lines').readlines()
-simp_lines=open('./data/simp_lines').readlines()
+trad_lines=open('../corpora/trad_lines').readlines()
+simp_lines=open('../corpora/simp_lines').readlines()
 lines_num_trad=[]
 lines_num_simp=[]
 
