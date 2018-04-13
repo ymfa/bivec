@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[95]:
+# In[1]:
 
 
 
@@ -21,14 +21,14 @@ simp_inf='./data/simp_lines'
 #import simplejson as json
 
 
-# In[ ]:
+# In[2]:
 
 
 simp2trad=json.load(open(simp2trad, 'r'))
 tra2simp=json.load(open(trad2simp, 'r'))
 
 
-# In[92]:
+# In[3]:
 
 
 #only keep keys with multiple entries with each entry's count >1000
@@ -68,7 +68,7 @@ print (len(multisimp), 'ambigous simplified characters')
 print (len(multitrad), 'ambigous traditional characters')
 
 
-# In[62]:
+# In[4]:
 
 
 # process files to extract test cases, max 20 sentences per ambiguous charactesr
@@ -81,7 +81,7 @@ simp_lines=open(simp_inf).readlines()
 
 
 
-# In[131]:
+# In[5]:
 
 
 max_per_char=10000
@@ -95,7 +95,7 @@ for key in multitrad:
 print('{0} ambiguous trad char test cases'.format(trad_max), '{0} ambigous simp char test cases'.format(simp_max))
 
 
-# In[132]:
+# In[6]:
 
 
 #generate a random list
@@ -104,7 +104,7 @@ random.shuffle(ran_is)
 print ('generate a random list')
 
 
-# In[133]:
+# In[20]:
 
 
 trad_testcases=0
@@ -129,7 +129,7 @@ for ran_i in ran_is:
                 else: 
 
                     if len(test_multitrad[char])< int(multitrad[char]/max_per_char):
-                        test_multitrad[char].append({'char_index':char_i,'orig_line_num':ran_i,'line':line,'gold':simp_lines[line_num]})
+                        test_multitrad[char].append({'char_index':char_i,'orig_line_num':ran_i,'line':line.strip(), 'gold_char':simp_lines[ran_i][char_i],'gold':simp_lines[ran_i].strip()})
                         trad_testcases+=1
         
 
@@ -143,13 +143,13 @@ for ran_i in ran_is:
                     continue
                 else:
                     if len(test_multisimp[char])< int(multisimp[char]/max_per_char):
-                        test_multisimp[char].append({'char_index':char_i,'orig_line_num':ran_i,'line':line,'gold':trad_lines[line_num]})
+                        test_multisimp[char].append({'char_index':char_i,'orig_line_num':ran_i,'line':line.strip(),'gold_char':trad_lines[ran_i][char_i],'gold':trad_lines[ran_i].strip()})
                         simp_testcases+=1
 
         
 
 
-# In[134]:
+# In[21]:
 
 
 
@@ -164,7 +164,7 @@ print (len(test_multitrad), 'ambigous trad char types in the test cases')
 print (len(test_multisimp), 'ambigous simp char types in the test cases')
 
 
-# In[136]:
+# In[22]:
 
 
 #store test cases
