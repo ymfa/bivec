@@ -10,8 +10,8 @@ prefix = sys.argv[1]
 in_prefix = 'corpora/' + prefix
 out_prefix = 'data/' + prefix
 
-if len(sys.argv) > 2:
-  dict_size = int(sys.argv[2])
+if len(sys.argv) > 3:
+  dict_size = int(sys.argv[3])
 else:
   dict_size = None  # unlimited vocab
 
