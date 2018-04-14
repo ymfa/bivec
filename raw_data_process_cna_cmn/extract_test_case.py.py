@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[15]:
 
 
 
@@ -21,14 +21,14 @@ simp_inf='./data/simp_lines'
 #import simplejson as json
 
 
-# In[2]:
+# In[17]:
 
 
 simp2trad=json.load(open(simp2trad, 'r'))
 tra2simp=json.load(open(trad2simp, 'r'))
 
 
-# In[3]:
+# In[19]:
 
 
 #only keep keys with multiple entries with each entry's count >1000
@@ -38,7 +38,7 @@ for key in simp2trad:
     if len(simp2trad[key].keys())>1: 
         temp_dict={}
         for tra_key in simp2trad[key]:
-            if int(simp2trad[key][tra_key])>=1000:
+            if int(simp2trad[key][tra_key])>=10000:
                 temp_dict[tra_key]=simp2trad[key][tra_key]
         if len(temp_dict)>1:
             simp2multitrad[key]=dict(temp_dict)
@@ -46,7 +46,7 @@ for key in tra2simp:
     if len(tra2simp[key].keys())>1:
         temp_dict={}
         for simp_key in tra2simp[key]:
-            if int(tra2simp[key][simp_key])>=1000:
+            if int(tra2simp[key][simp_key])>=10000:
                 temp_dict[simp_key]=tra2simp[key][simp_key]
         if len(temp_dict)>1:
             trad2multisimp[key]=dict(temp_dict)
@@ -64,14 +64,20 @@ for chars in simp2multitrad.values():
 for chars in trad2multisimp.values():
     multisimp.update(chars)
 
-print (len(multisimp), 'ambigous simplified characters')
-print (len(multitrad), 'ambigous traditional characters')
+print (len(multisimp), 'ambigous simplified character types')
+print (len(multitrad), 'ambigous traditional character types')
 
 
-# In[4]:
+# In[43]:
 
 
-# process files to extract test cases, max 20 sentences per ambiguous charactesr
+multisimp
+
+
+# In[20]:
+
+
+# process files to extract test cases according to prob (1/10000 cases per char)
 
 
 
@@ -81,7 +87,7 @@ simp_lines=open(simp_inf).readlines()
 
 
 
-# In[5]:
+# In[21]:
 
 
 max_per_char=10000
@@ -95,26 +101,29 @@ for key in multitrad:
 print('{0} ambiguous trad char test cases'.format(trad_max), '{0} ambigous simp char test cases'.format(simp_max))
 
 
-# In[6]:
+# In[28]:
 
 
 #generate a random list
 ran_is=list(range(len(trad_lines)))
-random.shuffle(ran_is)
+random.Random(1).shuffle(ran_is)
+
 print ('generate a random list')
 
 
-# In[20]:
+# In[44]:
 
 
 trad_testcases=0
 simp_testcases=0
 test_multitrad=defaultdict(list)
 test_multisimp=defaultdict(list)
+tra_line_matched=False
 
 for ran_i in ran_is:
         
         if  trad_testcases>=trad_max and simp_testcases>=simp_max:
+            print ('max reached')
             break
         if trad_testcases<trad_max:
             
@@ -128,12 +137,19 @@ for ran_i in ran_is:
                     continue
                 else: 
 
-                    if len(test_multitrad[char])< int(multitrad[char]/max_per_char):
-                        test_multitrad[char].append({'char_index':char_i,'orig_line_num':ran_i,'line':line.strip(), 'gold_char':simp_lines[ran_i][char_i],'gold':simp_lines[ran_i].strip()})
+                    if len(test_multitrad[char])< int(multitrad[char]/max_per_char): 
+                        test_multitrad[char].append({'char_index':char_i,'orig_line_num':ran_i,'gold':line.strip(), 'orig_char':simp_lines[ran_i][char_i],'orig':simp_lines[ran_i].strip()})
                         trad_testcases+=1
+                        tra_line_matched=True
+                        break #diversify the test cases. Once a sentence is matched, continue searching for later sents
         
-
-        if simp_testcases<simp_max:
+        
+        if tra_line_matched==True: #mdiversify the test cases
+            tra_line_matched=False
+            continue
+            
+            
+        elif simp_testcases<simp_max:
             #read simplified lines
             line=simp_lines[ran_i]
 
@@ -143,13 +159,13 @@ for ran_i in ran_is:
                     continue
                 else:
                     if len(test_multisimp[char])< int(multisimp[char]/max_per_char):
-                        test_multisimp[char].append({'char_index':char_i,'orig_line_num':ran_i,'line':line.strip(),'gold_char':trad_lines[ran_i][char_i],'gold':trad_lines[ran_i].strip()})
+                        test_multisimp[char].append({'char_index':char_i,'orig_line_num':ran_i,'gold':line.strip(),'orig_char':trad_lines[ran_i][char_i],'orig':trad_lines[ran_i].strip()})
                         simp_testcases+=1
-
+                        break
         
 
 
-# In[21]:
+# In[41]:
 
 
 
@@ -164,15 +180,15 @@ print (len(test_multitrad), 'ambigous trad char types in the test cases')
 print (len(test_multisimp), 'ambigous simp char types in the test cases')
 
 
-# In[22]:
+# In[42]:
 
 
 #store test cases
 
-with open('../eval/test_cases/trad_test.json','w') as f:
+with open('../eval/test_cases/simp2multitrad_test.json','w') as f:
     json.dump(test_multitrad,f)
     
-with open('../eval/test_cases/simp_test.json', 'w') as f:
+with open('../eval/test_cases/trad2multisimp_test.json', 'w') as f:
     json.dump(test_multisimp, f)
 
 
