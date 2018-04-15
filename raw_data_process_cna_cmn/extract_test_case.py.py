@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[15]:
+# In[133]:
 
 
 
@@ -9,6 +9,7 @@ from collections import defaultdict
 import json
 import sys
 import random
+import copy
 
 # simp2trad=sys.argv[1]
 # tra2simp=sys.argv[2]
@@ -18,17 +19,24 @@ simp2trad='./simp2tra.json'
 trad2simp='./tra2simp.json'
 trad_inf='./data/trad_lines'
 simp_inf='./data/simp_lines'
+
 #import simplejson as json
 
 
-# In[17]:
+# In[134]:
 
 
 simp2trad=json.load(open(simp2trad, 'r'))
 tra2simp=json.load(open(trad2simp, 'r'))
 
 
-# In[19]:
+# In[135]:
+
+
+simp2trad
+
+
+# In[136]:
 
 
 #only keep keys with multiple entries with each entry's count >1000
@@ -38,7 +46,7 @@ for key in simp2trad:
     if len(simp2trad[key].keys())>1: 
         temp_dict={}
         for tra_key in simp2trad[key]:
-            if int(simp2trad[key][tra_key])>=10000:
+            if int(simp2trad[key][tra_key])>=1000:
                 temp_dict[tra_key]=simp2trad[key][tra_key]
         if len(temp_dict)>1:
             simp2multitrad[key]=dict(temp_dict)
@@ -46,7 +54,7 @@ for key in tra2simp:
     if len(tra2simp[key].keys())>1:
         temp_dict={}
         for simp_key in tra2simp[key]:
-            if int(tra2simp[key][simp_key])>=10000:
+            if int(tra2simp[key][simp_key])>=1000:
                 temp_dict[simp_key]=tra2simp[key][simp_key]
         if len(temp_dict)>1:
             trad2multisimp[key]=dict(temp_dict)
@@ -68,13 +76,53 @@ print (len(multisimp), 'ambigous simplified character types')
 print (len(multitrad), 'ambigous traditional character types')
 
 
-# In[43]:
+# In[161]:
 
 
-multisimp
+#filter and extract test case characters
+simp2trad_official={}
+simp2trad_official_final=defaultdict(str)
+trad_final_num=0
+multitrad_final=[]
+
+print ('filtering the following chars...')
+with open('./simp2multitrad_official.txt') as f:
+    for line in f:
+        line=line.strip()
+        line=line.split('\t')
+        simp_char=line[0]
+        trad_chars=line[2].replace('～',line[0])
+        #filter according to fre and outut
+        trad_char_per_simp=''
+        for trad_char in trad_chars:
+            try:
+                freq = simp2trad[simp_char][trad_char]
+                if freq < 1000:
+                    print(simp_char, trad_char)
+                else:
+                    trad_char_per_simp += trad_char
+            except KeyError:
+                print(simp_char, trad_char, 'e')
+        if len(trad_char_per_simp) > 1:
+                simp2trad_official_final[simp_char]=trad_char_per_simp
+                trad_final_num+=len(trad_char_per_simp)
+                multitrad_final+=list(trad_char_per_simp)
+print (len(simp2trad_official_final),'simp2trad_official_new test case simp char types')
 
 
-# In[20]:
+# In[155]:
+
+
+# show differences between simp2trad_offical and the corpus
+for sim_char in simp2trad_official_final:
+    
+   simp2trad_lst= sorted(list(simp2multitrad[sim_char].keys()))
+   simp2trad_official_lst=sorted(list(simp2trad_official_final[sim_char]))
+   if simp2trad_official_lst!=simp2trad_lst:
+        print(simp2multitrad[sim_char],simp2trad_official_new[sim_char])
+
+
+# In[143]:
 
 
 # process files to extract test cases according to prob (1/10000 cases per char)
@@ -87,21 +135,26 @@ simp_lines=open(simp_inf).readlines()
 
 
 
-# In[21]:
+# In[158]:
 
 
-max_per_char=10000
+####extract a fixed number of chars
+max_per_char=100
+trad_max=max_per_char*trad_final_num
 simp_max=0
-for key in multisimp:
-    simp_max+=int(multisimp[key]/max_per_char)
+###extract according to probability
+#max_per_char=10000
+# simp_max=0
+# for key in multisimp:
+#     #simp_max+=int(multisimp[key]/max_per_char)
     
-trad_max=0
-for key in multitrad:
-    trad_max+=int(multitrad[key]/max_per_char)
+# trad_max=0
+# for key in multitrad:
+#     trad_max+=int(multitrad[key]/max_per_char)
 print('{0} ambiguous trad char test cases'.format(trad_max), '{0} ambigous simp char test cases'.format(simp_max))
 
 
-# In[28]:
+# In[150]:
 
 
 #generate a random list
@@ -111,21 +164,27 @@ random.Random(1).shuffle(ran_is)
 print ('generate a random list')
 
 
-# In[44]:
+# In[165]:
 
 
-trad_testcases=0
-simp_testcases=0
+simp2trad_official_final
+
+
+# In[166]:
+
+
+trad_testcases=[]
+simp_testcases=[]
 test_multitrad=defaultdict(list)
 test_multisimp=defaultdict(list)
 tra_line_matched=False
 
 for ran_i in ran_is:
         
-        if  trad_testcases>=trad_max and simp_testcases>=simp_max:
+        if  len(trad_testcases)>=trad_max and len(simp_testcases)>=simp_max:
             print ('max reached')
             break
-        if trad_testcases<trad_max:
+        if len(trad_testcases)<trad_max:
             
 
             #read traditional lines
@@ -133,23 +192,28 @@ for ran_i in ran_is:
 
             for char_i in range(len(line)):
                 char=line[char_i]
-                if char not in multitrad:
+                if char not in multitrad_final:
                     continue
                 else: 
 
-                    if len(test_multitrad[char])< int(multitrad[char]/max_per_char): 
-                        test_multitrad[char].append({'char_index':char_i,'orig_line_num':ran_i,'gold':line.strip(), 'orig_char':simp_lines[ran_i][char_i],'orig':simp_lines[ran_i].strip()})
-                        trad_testcases+=1
-                        tra_line_matched=True
-                        break #diversify the test cases. Once a sentence is matched, continue searching for later sents
-        
+                    #if len(test_multitrad[char])< int(multitrad[char]/max_per_char): 
+                    if len(test_multitrad[char])<max_per_char:
+                        test_char=simp_lines[ran_i][char_i]
+                        if test_char not in simp2trad_official_final:
+                            print ('test_char {0} (simp) for {1} (trad) not in simp2trad_official_final'.format(test_char, char))
+                        else:
+                            test_multitrad[char].append({'char_index':char_i,'orig_line_num':ran_i,'gold':line.strip(), 'orig_char':simp_lines[ran_i][char_i],'orig':simp_lines[ran_i].strip()})
+                            trad_testcases.append(ran_i)
+                            tra_line_matched=True
+                            break #diversify the test cases. Once a sentence is matched, continue searching for later sents
+
         
         if tra_line_matched==True: #mdiversify the test cases
             tra_line_matched=False
             continue
             
             
-        elif simp_testcases<simp_max:
+        elif len(simp_testcases)<simp_max:
             #read simplified lines
             line=simp_lines[ran_i]
 
@@ -160,12 +224,12 @@ for ran_i in ran_is:
                 else:
                     if len(test_multisimp[char])< int(multisimp[char]/max_per_char):
                         test_multisimp[char].append({'char_index':char_i,'orig_line_num':ran_i,'gold':line.strip(),'orig_char':trad_lines[ran_i][char_i],'orig':trad_lines[ran_i].strip()})
-                        simp_testcases+=1
+                        simp_testcases.append(ran_i)
                         break
         
 
 
-# In[41]:
+# In[167]:
 
 
 
@@ -180,7 +244,7 @@ print (len(test_multitrad), 'ambigous trad char types in the test cases')
 print (len(test_multisimp), 'ambigous simp char types in the test cases')
 
 
-# In[42]:
+# In[168]:
 
 
 #store test cases
@@ -192,19 +256,31 @@ with open('../eval/test_cases/trad2multisimp_test.json', 'w') as f:
     json.dump(test_multisimp, f)
 
 
-# In[13]:
+# In[70]:
 
 
 #delete the test sentences from the corpus to form training dataset
-line_nums=sorted(set(lines_num_trad+lines_num_simp),reverse=True)
+line_nums=set(trad_testcases+simp_testcases)
+print ('trad lines',len(trad_lines),'simp_lines',len(simp_lines))
+with open(trad_inf, 'w') as trad_f:
+    with open (simp_inf,'w') as simp_f:
+        for line_num in range(len(trad_lines)):
+            if line_num not in line_nums:
+                trad_f.write(trad_lines[line_num])
+                simp_f.write(simp_lines[line_num])
+            else:
+                
+                pass
+       
+   
 
-with open('./data/trad_train', 'w') as f:
-    for line_num in line_nums:
-        del trad_lines[line_num]
-    f.writelines(trad_lines)
 
-with open('./data/simp_train', 'w') as f:
-    for line_num in line_nums:
-        del simp_lines[line_num]
-    f.writelines(simp_lines)
+# In[57]:
+
+
+import copy
+a=[1,2]
+b=copy.copy(a)
+del a[0]
+a,b
 

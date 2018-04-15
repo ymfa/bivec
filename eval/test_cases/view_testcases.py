@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[8]:
+# In[1]:
 
 
 import json
@@ -10,7 +10,7 @@ simp2multitrad_test=json.load(open('./simp2multitrad_test.json', 'r'))
 trad2multisimp_test=json.load(open('./trad2multisimp_test.json', 'r'))
 
 
-# In[9]:
+# In[2]:
 
 
 simp2multitrad_test
@@ -22,13 +22,13 @@ simp2multitrad_test
 trad2multisimp_test
 
 
-# In[15]:
+# In[5]:
 
 
 #store csv
 import csv
 
-with open('simp2multitrad_tests.csv', 'w') as csvfile:
+with open('simp2multitrad_test.csv', 'w') as csvfile:
     fieldnames = ['orig_char', 'gold_char','char_index','orig','gold','orig_line_num']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
@@ -52,10 +52,10 @@ with open('trad2multisimp_test.csv', 'w') as csvfile:
            
 
 
-# In[16]:
+# In[6]:
 
 
 import pandas as pd
-df1 = pd.read_csv("./trad2multisimp_test.csv")
+df1 = pd.read_csv("./simp2multitrad_test.csv")
 df1
 
