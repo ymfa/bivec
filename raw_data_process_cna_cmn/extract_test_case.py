@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[29]:
+# In[31]:
 
 
 
@@ -20,11 +20,13 @@ simp2trad='./simp2tra.json'
 trad2simp='./tra2simp.json'
 trad_inf='./data/trad_lines'
 simp_inf='./data/simp_lines'
+trad_ouf='../corpora/train.tc'
+simp_ouf='../corpora/train_sc'
 
 #import simplejson as json
 
 
-# In[12]:
+# In[32]:
 
 
 simp2trad=json.load(open(simp2trad, 'r'))
@@ -37,7 +39,7 @@ tra2simp=json.load(open(trad2simp, 'r'))
 
 
 
-# In[22]:
+# In[33]:
 
 
 #only keep keys with multiple entries with each entry's count >1000
@@ -77,7 +79,7 @@ print (len(multisimp), 'ambigous simplified character types')
 print (len(multitrad), 'ambigous traditional character types')
 
 
-# In[23]:
+# In[42]:
 
 
 #filter and extract test case characters
@@ -108,9 +110,11 @@ with open('./simp2multitrad_official.txt') as f:
                 trad_final_num+=len(trad_char_per_simp)
                 multitrad_final+=list(trad_char_per_simp)
 print (len(simp2trad_official_final),'simp2trad_official_new test case simp char types')
+if len(multitrad_final)!=len(set(multitrad_final)):
+    print ('warning! the same traditional character can be mapped onto different simplified characters ')
 
 
-# In[24]:
+# In[35]:
 
 
 # show differences between simp2trad_offical and the corpus
@@ -122,7 +126,7 @@ for sim_char in simp2trad_official_final:
         print(simp2multitrad[sim_char],simp2trad_official_final[sim_char])
 
 
-# In[19]:
+# In[36]:
 
 
 # process files to extract test cases according to prob (1/10000 cases per char)
@@ -135,7 +139,7 @@ simp_lines=open(simp_inf).readlines()
 
 
 
-# In[25]:
+# In[37]:
 
 
 ####extract a fixed number of chars
@@ -154,7 +158,7 @@ simp_max=0
 print('{0} ambiguous trad char test cases'.format(trad_max), '{0} ambigous simp char test cases'.format(simp_max))
 
 
-# In[21]:
+# In[38]:
 
 
 #generate a random list
@@ -164,13 +168,13 @@ random.Random(1).shuffle(ran_is)
 print ('generate a random list')
 
 
-# In[165]:
+# In[39]:
 
 
 simp2trad_official_final
 
 
-# In[26]:
+# In[43]:
 
 
 trad_testcases=[]
@@ -284,8 +288,8 @@ with open ('../eval/test_cases/simp2multitrad_test', 'w') as f_txt:
 #delete the test sentences from the corpus to form training dataset
 line_nums=set(trad_testcases+simp_testcases)
 print ('trad lines',len(trad_lines),'simp_lines',len(simp_lines))
-with open(trad_inf, 'w') as trad_f:
-    with open (simp_inf,'w') as simp_f:
+with open(trad_ouf, 'w') as trad_f:
+    with open (simp_ouf,'w') as simp_f:
         for line_num in range(len(trad_lines)):
             if line_num not in line_nums:
                 trad_f.write(trad_lines[line_num])
