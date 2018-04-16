@@ -13,31 +13,20 @@ trad2multisimp_test=json.load(open('./trad2multisimp_test.json', 'r'))
 # In[2]:
 
 
-simp2multitrad_test
-
-
-# In[10]:
-
-
-trad2multisimp_test
-
-
-# In[5]:
-
-
 #store csv
 import csv
+with open ('simp2multitrad_test_raw.txt', 'w') as f_txt:
+    with open('simp2multitrad_test.csv', 'w') as csvfile:
+        fieldnames = ['orig_char', 'gold_char','char_index','orig','gold','orig_line_num']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
-with open('simp2multitrad_test.csv', 'w') as csvfile:
-    fieldnames = ['orig_char', 'gold_char','char_index','orig','gold','orig_line_num']
-    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
 
-    writer.writeheader()
-    
-    for key in simp2multitrad_test:
-        for line in simp2multitrad_test[key]:
-            line['gold_char']=key
-            writer.writerow(line)
+        for key in simp2multitrad_test:
+            for line in simp2multitrad_test[key]:
+                line['gold_char']=key
+                writer.writerow(line)
+                f_txt.write(line['orig']+'\n')
 
 with open('trad2multisimp_test.csv', 'w') as csvfile:
     fieldnames = ['orig_char', 'gold_char','char_index','orig','gold','orig_line_num']
