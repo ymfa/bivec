@@ -3,17 +3,18 @@ import sys, re
 from collections import Counter
 
 if len(sys.argv) < 3:
-  print("Usage: ./make_data.py InputPrefix OutputPrefix [VocabSize]")
-  print("Input files are under corpora/; output files are under data/.")
+  print("Usage: ./make_data.py FileNamePrefix [MinFreq]")
+  print("I will look for input files under corpora/, output files under data/.")
+  print("i.e. input files are corpora/FileNamePrefix.sc and corpora/FileNamePrefix.tc.")
   sys.exit()
 prefix = sys.argv[1]
 in_prefix = 'corpora/' + prefix
 out_prefix = 'data/' + prefix
 
 if len(sys.argv) > 2:
-  dict_size = int(sys.argv[2])
+  min_freq = int(sys.argv[2])
 else:
-  dict_size = None  # unlimited vocab
+  min_freq = 0  # unlimited vocab
 
 # Character ranges according to https://en.wikipedia.org/wiki/CJK_Unified_Ideographs
 # Some codepoints in these ranges are not currently in use
@@ -25,26 +26,30 @@ def filter_hz(s, vocab):
 def process_file(fin, fout):
   # collect sentences and build vocab
   sentences = []
-  if dict_size: vocab = Counter()
+  if min_freq: vocab = Counter()
   for sentence in fin:
     sentence = non_hz.sub('', sentence)
     if sentence:
-      if dict_size: vocab.update(sentence)
+      if min_freq: vocab.update(sentence)
       sentences.append(sentence)
-  if dict_size: vocab = set(k for k, v in vocab.most_common(dict_size))
+  if min_freq:
+    vocab = set(k for k, v in vocab.items() if v >= min_freq)
+    print('vocab size:', len(vocab))
   # write file
   for sentence in sentences:
-    if dict_size: sentence = filter_hz(sentence, vocab)
+    if min_freq: sentence = filter_hz(sentence, vocab)
     else: sentence = ' '.join(sentence)
     fout.write(sentence + '\n')
   return [len(s) for s in sentences]
 
 with open(in_prefix + '.tc', 'r') as fin:
   with open(out_prefix + '.de', 'w') as fout:
+    print('TC', end=' ')
     tc_counts = process_file(fin, fout)
 
 with open(in_prefix + '.sc', 'r') as fin:
   with open(out_prefix + '.en', 'w') as fout:
+    print('SC', end=' ')
     sc_counts = process_file(fin, fout)
 
 if tc_counts != sc_counts:
