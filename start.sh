@@ -9,7 +9,10 @@ apt-get update
 #apt-get install build-essential
 apt-get update && apt-get install procps
 apt-get install vim
-apt-get install opencc
+apt-get install build-essential
+
+#for opencc
+
 #export PYTHONSTARTUP='/home/context-embed/context-skipgram/PYTHONSTARTUP.py'
 
 

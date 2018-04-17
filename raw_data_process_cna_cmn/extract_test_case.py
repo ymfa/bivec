@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[31]:
+# In[2]:
 
 
 
@@ -26,7 +26,7 @@ simp_ouf='../corpora/train_sc'
 #import simplejson as json
 
 
-# In[32]:
+# In[3]:
 
 
 simp2trad=json.load(open(simp2trad, 'r'))
@@ -39,7 +39,7 @@ tra2simp=json.load(open(trad2simp, 'r'))
 
 
 
-# In[33]:
+# In[4]:
 
 
 #only keep keys with multiple entries with each entry's count >1000
@@ -79,7 +79,7 @@ print (len(multisimp), 'ambigous simplified character types')
 print (len(multitrad), 'ambigous traditional character types')
 
 
-# In[42]:
+# In[5]:
 
 
 #filter and extract test case characters
@@ -114,7 +114,7 @@ if len(multitrad_final)!=len(set(multitrad_final)):
     print ('warning! the same traditional character can be mapped onto different simplified characters ')
 
 
-# In[35]:
+# In[6]:
 
 
 # show differences between simp2trad_offical and the corpus
@@ -126,7 +126,7 @@ for sim_char in simp2trad_official_final:
         print(simp2multitrad[sim_char],simp2trad_official_final[sim_char])
 
 
-# In[36]:
+# In[7]:
 
 
 # process files to extract test cases according to prob (1/10000 cases per char)
@@ -139,7 +139,7 @@ simp_lines=open(simp_inf).readlines()
 
 
 
-# In[37]:
+# In[8]:
 
 
 ####extract a fixed number of chars
@@ -158,7 +158,7 @@ simp_max=0
 print('{0} ambiguous trad char test cases'.format(trad_max), '{0} ambigous simp char test cases'.format(simp_max))
 
 
-# In[38]:
+# In[9]:
 
 
 #generate a random list
@@ -168,13 +168,13 @@ random.Random(1).shuffle(ran_is)
 print ('generate a random list')
 
 
-# In[39]:
+# In[10]:
 
 
 simp2trad_official_final
 
 
-# In[43]:
+# In[12]:
 
 
 trad_testcases=[]
@@ -202,7 +202,7 @@ for ran_i in ran_is:
 
                     #if len(test_multitrad[char])< int(multitrad[char]/max_per_char): 
                     if len(test_multitrad[char])<max_per_char:
-                        test_char=simp_lines[ran_i][char_i]
+                        test_char=simp_lines[ran_i].strip()[char_i]
                         if test_char not in simp2trad_official_final:
                             print ('test_char {0} (simp) for {1} (trad) not in simp2trad_official_final'.format(test_char, char))
                         else:
@@ -299,14 +299,4 @@ with open(trad_ouf, 'w') as trad_f:
                 pass
        
    
-
-
-# In[57]:
-
-
-import copy
-a=[1,2]
-b=copy.copy(a)
-del a[0]
-a,b
 
