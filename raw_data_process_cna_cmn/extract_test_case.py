@@ -35,7 +35,7 @@ else:
     trad_inf='./data/trad_lines'
     simp_inf='./data/simp_lines'
     trad_ouf='../corpora/train.tc'
-    simp_ouf='../corpora/train_sc'
+    simp_ouf='../corpora/train.sc'
 
 #import simplejson as json
 
