@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[2]:
 
 
 import sys
@@ -10,18 +10,25 @@ import pandas as pd
 from collections import defaultdict
 import logging
 
-#logging.basicConfig(filename='eval.log',level=logging.DEBUG)
 simp2trad_official='../raw_data_process_cna_cmn/simp2multitrad_official.txt'
-if len(sys.argv)<3:
-# if len(sys.argv)<5:
+if sys.argv[0]=='/opt/conda/lib/python3.6/site-packages/ipykernel_launcher.py':
     result='./opencc/sinica_test_opencc_s2tw'
     gold='./test_cases/sinica_gold.csv'
-    logging.warning('result and gold not specified. Default is {0}, gold is {1}'.format(result,gold))
-
+    logging.basicConfig(level=logging.DEBUG)
+    logging.info ('result {0} and gold {1}'.format( result,gold))
 else:
-    result=sys.argv[1]
-    gold=sys.argv[2]
-    print ('result {0} and gold {1}'.format( result,gold))
+    logging.basicConfig(filename='extract_test_case.log',level=logging.DEBUG)
+
+    
+    if len(sys.argv)<3:
+        #result='./opencc/sinica_test_opencc_s2tw'
+        #gold='./test_cases/sinica_gold.csv'
+        logging.warning('result and gold not specified!')
+        raise
+    else:
+        result=sys.argv[1]
+        gold=sys.argv[2]
+        print ('result {0} and gold {1}'.format( result,gold))
 
 
 

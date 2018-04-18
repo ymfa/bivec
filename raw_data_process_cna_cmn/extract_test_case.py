@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[13]:
 
 
 from collections import defaultdict
@@ -13,41 +13,43 @@ import csv
 
 
 import logging
-logging.basicConfig(filename='extract_test_case.log',level=logging.DEBUG)
-
-
-
-if len(sys.argv)==7:
-#if len(sys.argv)==12:
-    simp2trad=sys.argv[1]
-    tra2simp=sys.argv[2]
-    trad_inf=sys.argv[3]
-    simp_inf=sys.argv[4]
-    trad_ouf=sys.argv[5]
-    simp_ouf=sys.argv[6]
+if sys.argv[0]=='/opt/conda/lib/python3.6/site-packages/ipykernel_launcher.py':
+    prefix='ldc'
+    logging.basicConfig(level=logging.DEBUG)
+    logging.debug('prefix is {0}'.format(prefix))
 else:
-    print ('no arguments passed. Back to default')
-    logging.warning('no arguments passed. Back to default')
+    logging.basicConfig(filename='extract_test_case.log',level=logging.DEBUG)
 
-    simp_ouf='../corpora/train_sc'
-    simp2trad='./simp2tra.json'
-    trad2simp='./tra2simp.json'
-    trad_inf='./data/trad_lines'
-    simp_inf='./data/simp_lines'
-    trad_ouf='../corpora/train.tc'
-    simp_ouf='../corpora/train.sc'
+    
+    
+    if len(sys.argv)==2:
+    #if len(sys.argv)==12:
+        prefix=sys.argv[1]
+    else: 
+        print ('no argument or more arguments passed. Back to default prefix train')
+        prefix='ldc'
+
+        logging.warning('no arguments passed. Back to default prefix {0}'.format(prefix))
+    
+simp_ouf='../corpora/{0}.sc'.format(prefix)
+simp2trad='./simp2tra.json'
+trad2simp='./tra2simp.json'
+trad_inf='./data/{0}.tc'.format(prefix)
+simp_inf='./data/{0}.sc'.format(prefix)
+trad_ouf='../corpora/{0}.tc'.format(prefix)
+simp_ouf='../corpora/{0}.sc'.format(prefix)
 
 #import simplejson as json
 
 
-# In[16]:
+# In[11]:
 
 
 simp2trad=json.load(open(simp2trad, 'r'))
 tra2simp=json.load(open(trad2simp, 'r'))
 
 
-# In[17]:
+# In[12]:
 
 
 logging.info('reading in simp2trad and trad2simp. Only keep ambigous chars')

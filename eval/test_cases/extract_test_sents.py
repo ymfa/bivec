@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[15]:
+# In[5]:
 
 
 import sys
@@ -12,20 +12,27 @@ import logging
 import numpy as np
 
 #logging.basicConfig(filename='eval.log',level=logging.DEBUG)
-
-if len(sys.argv)<2:
-#if len(sys.argv)<5:
-    gold_pre='./sinica'
-    logging.warning('result and gold not specified')
-
+import logging
+if sys.argv[0]=='/opt/conda/lib/python3.6/site-packages/ipykernel_launcher.py':
+    prefix='sinica'
+    logging.basicConfig(level=logging.DEBUG)
+    logging.debug('prefix is {0}'.format(prefix))
 else:
-    gold_pre=sys.argv[1]
+    logging.basicConfig(filename='extract_test_case.log',level=logging.DEBUG)
 
-gold=gold_pre+'_gold.csv'
+    
+    
+    if len(sys.argv)<2:
+        logging.warning('result and gold not specified. ')
 
-gold_out=gold_pre+'_test'
-print ('gold csv is {0}'.format(gold))
-print ('out test file is {0}'.format(gold_out))
+    else:
+        prefix=sys.argv[1]
+
+gold=prefix+'_gold.csv'
+
+gold_out=prefix+'_test'
+logging.info ('gold csv is {0}'.format(gold))
+logging.info ('out test file is {0}'.format(gold_out))
 
 
 

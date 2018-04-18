@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[2]:
 
 
 import os
@@ -9,14 +9,26 @@ import sys
 import re
 from xml.etree import cElementTree as ET
 
-if len(sys.argv)<3:
-    print ('root outfile missing')
-    print ('switched to default. root=./cna_cmn, trad_out=./trad_lines')
+import logging
+if sys.argv[0]=='/opt/conda/lib/python3.6/site-packages/ipykernel_launcher.py':
+    logging.basicConfig(level=logging.DEBUG)
+    prefix='ldc'
+    logging.debug('prefix is {0}'.format(prefix))
     root='./cna_cmn'
-    trad_out='./trad_lines'
+    trad_out='./{0}.tc'.format(prefix)
+else:
+    logging.basicConfig(filename='extract_test_case.log',level=logging.DEBUG)
+
+    
+if len(sys.argv)<3:
+    logging.warning ('root outfile missing')
+    root='./cna_cmn'
+    trad_out='./ldc.tc'
+    logging.warning ('switched to default. root={0}, trad_out={1}'.format(root,trad_out))
+
 else:
     root=sys.argv[1]
-    trad_out=sys.argv[2]
+    trad_out=sys.argv[2]+'.tc'
 
 
 # In[18]:
