@@ -51,7 +51,7 @@ multi_trad_official
 yitizi={'裡':'裏','裏':'裡'}#,'衚':'胡', '胡':'衚'}
 
 
-# In[69]:
+# In[70]:
 
 
 
@@ -72,7 +72,7 @@ with open(result+'_error', 'w') as error_f:
 
         writer.writeheader()
         for line in res_f:
-            #line=line.strip()
+            line=line.rstrip()
             char_i=gold_csv['char_index'][line_num]
             char_gold=gold_csv['gold_char'][line_num]
             char_res=line[char_i]
