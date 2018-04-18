@@ -1,8 +1,7 @@
 
 # coding: utf-8
 
-# In[2]:
-
+# In[1]:
 
 
 from collections import defaultdict
@@ -12,36 +11,46 @@ import random
 import copy
 import csv
 
-# simp2trad=sys.argv[1]
-# tra2simp=sys.argv[2]
-# trad_inf=sys.argv[3]
-# simp_inf=sys.argv[4]
-simp2trad='./simp2tra.json'
-trad2simp='./tra2simp.json'
-trad_inf='./data/trad_lines'
-simp_inf='./data/simp_lines'
-trad_ouf='../corpora/train.tc'
-simp_ouf='../corpora/train_sc'
+
+import logging
+logging.basicConfig(filename='extract_test_case.log',level=logging.DEBUG)
+
+
+
+if len(sys.argv)==7:
+#if len(sys.argv)==12:
+    simp2trad=sys.argv[1]
+    tra2simp=sys.argv[2]
+    trad_inf=sys.argv[3]
+    simp_inf=sys.argv[4]
+    trad_ouf=sys.argv[5]
+    simp_ouf=sys.argv[6]
+else:
+    print ('no arguments passed. Back to default')
+    logging.warning('no arguments passed. Back to default')
+
+    simp_ouf='../corpora/train_sc'
+    simp2trad='./simp2tra.json'
+    trad2simp='./tra2simp.json'
+    trad_inf='./data/trad_lines'
+    simp_inf='./data/simp_lines'
+    trad_ouf='../corpora/train.tc'
+    simp_ouf='../corpora/train_sc'
 
 #import simplejson as json
 
 
-# In[3]:
+# In[16]:
 
 
 simp2trad=json.load(open(simp2trad, 'r'))
 tra2simp=json.load(open(trad2simp, 'r'))
 
 
-# In[13]:
+# In[17]:
 
 
-
-
-
-# In[4]:
-
-
+logging.info('reading in simp2trad and trad2simp. Only keep ambigous chars')
 #only keep keys with multiple entries with each entry's count >1000
 simp2multitrad={}
 trad2multisimp={}
@@ -64,8 +73,11 @@ for key in tra2simp:
         
 #num of simplified characters with multiple traditional
 print (len(simp2multitrad), 'simplified character types with multiple traditional chars aligned')
+logging.debug ('{0} simplified character types with multiple traditional chars aligned'.format(len(simp2multitrad)))
+
 #num of tra characters with multiple simplified
 print (len(trad2multisimp),'tra character types with multiple simplified chars aligned')
+logging.debug ('{0} tra character types with multiple simplified chars aligned'.format(len(trad2multisimp)))
 
 #compile multitrad tra characters
 multitrad={}
@@ -75,17 +87,21 @@ for chars in simp2multitrad.values():
 for chars in trad2multisimp.values():
     multisimp.update(chars)
 
-print (len(multisimp), 'ambigous simplified character types')
+
+print(len(multisimp), 'ambigous simplified character types')
 print (len(multitrad), 'ambigous traditional character types')
+logging.debug( '{0} ambigous simplified character types'.format(len(multisimp)))
+logging.debug ( '{0} ambigous traditional character types'.format(len(multitrad)))
 
 
-# In[5]:
+# In[18]:
 
 
 #filter and extract test case characters
 simp2trad_official_final=defaultdict(str)
-trad_final_num=0
 multitrad_final=[]
+
+logging.debug ('filtering the following chars which are <1000..')
 
 print ('filtering the following chars...')
 with open('./simp2multitrad_official.txt') as f:
@@ -101,37 +117,46 @@ with open('./simp2multitrad_official.txt') as f:
                 freq = simp2trad[simp_char][trad_char]
                 if freq < 1000:
                     print(simp_char, trad_char)
+                    logging.debug('{0} {1}'.format(simp_char, trad_char))
                 else:
                     trad_char_per_simp += trad_char
             except KeyError:
                 print(simp_char, trad_char, 'e')
+                logging.warning('{0} {1} {2}'.format(simp_char, trad_char, 'e'))
+
         if len(trad_char_per_simp) > 1:
                 simp2trad_official_final[simp_char]=trad_char_per_simp
-                trad_final_num+=len(trad_char_per_simp)
                 multitrad_final+=list(trad_char_per_simp)
-print (len(simp2trad_official_final),'simp2trad_official_new test case simp char types')
+print (len(simp2trad_official_final),'simp2trad_official_final test case simp char types')
+logging.info ('{0} simp2trad_official_final test case simp char types'.format(len(simp2trad_official_final)))
+
 if len(multitrad_final)!=len(set(multitrad_final)):
     print ('warning! the same traditional character can be mapped onto different simplified characters ')
+    logging.warning('warning! the same traditional character can be mapped onto different simplified characters ')
+
+    
 
 
-# In[6]:
+# In[19]:
 
 
 # show differences between simp2trad_offical and the corpus
+logging.info('show differences between simp2trad_offical and the corpus')
 for sim_char in simp2trad_official_final:
     
    simp2trad_lst= sorted(list(simp2multitrad[sim_char].keys()))
    simp2trad_official_lst=sorted(list(simp2trad_official_final[sim_char]))
    if simp2trad_official_lst!=simp2trad_lst:
         print(simp2multitrad[sim_char],simp2trad_official_final[sim_char])
+        logging.debug('{0} {1} '.format(simp2multitrad[sim_char],simp2trad_official_final[sim_char]))
 
 
-# In[7]:
+# In[20]:
 
 
 # process files to extract test cases according to prob (1/10000 cases per char)
 
-
+logging.info('read tradlines and simplines...')
 
 trad_lines=open(trad_inf).readlines()
 simp_lines=open(simp_inf).readlines()
@@ -139,12 +164,12 @@ simp_lines=open(simp_inf).readlines()
 
 
 
-# In[8]:
+# In[21]:
 
 
 ####extract a fixed number of chars
 max_per_char=100
-trad_max=max_per_char*trad_final_num
+trad_max=max_per_char*len(multitrad_final)
 simp_max=0
 ###extract according to probability
 #max_per_char=10000
@@ -155,10 +180,13 @@ simp_max=0
 # trad_max=0
 # for key in multitrad:
 #     trad_max+=int(multitrad[key]/max_per_char)
-print('{0} ambiguous trad char test cases'.format(trad_max), '{0} ambigous simp char test cases'.format(simp_max))
+print('aim to find {0} ambiguous trad char test cases'.format(trad_max), '{0} ambigous simp char test cases'.format(simp_max))
+logging.info('{0},{1}'.format('aim to find {0} ambiguous trad char test cases'.format(trad_max), '{0} ambigous simp char test cases'.format(simp_max)))
 
 
-# In[9]:
+
+
+# In[22]:
 
 
 #generate a random list
@@ -166,16 +194,19 @@ ran_is=list(range(len(trad_lines)))
 random.Random(1).shuffle(ran_is)
 
 print ('generate a random list')
+logging.info ('generate a random list')
 
 
-# In[10]:
+# In[9]:
 
 
 simp2trad_official_final
 
 
-# In[12]:
+# In[23]:
 
+
+logging.info('extracting test cases')
 
 trad_testcases=[]
 simp_testcases=[]
@@ -187,6 +218,7 @@ for ran_i in ran_is:
         
         if  len(trad_testcases)>=trad_max and len(simp_testcases)>=simp_max:
             print ('max reached')
+            logging.info('max reached')
             break
         if len(trad_testcases)<trad_max:
             
@@ -205,6 +237,8 @@ for ran_i in ran_is:
                         test_char=simp_lines[ran_i].strip()[char_i]
                         if test_char not in simp2trad_official_final:
                             print ('test_char {0} (simp) for {1} (trad) not in simp2trad_official_final'.format(test_char, char))
+                            logging.warning ('test_char {0} (simp) for {1} (trad) not in simp2trad_official_final'.format(test_char, char))
+
                         else:
                             test_multitrad[char].append({'char_index':char_i,'orig_line_num':ran_i,'gold':line, 'orig_char':test_char,'orig':simp_lines[ran_i].strip()})
                             trad_testcases.append(ran_i)
@@ -245,16 +279,20 @@ for key in list(test_multitrad.keys()):
     if test_multitrad[key]==[]:
         test_multitrad.pop(key)
 print (len(test_multitrad), 'ambigous trad char types in the test cases')
+logging.info ( '{0} ambigous trad char types in the test cases'.format(len(test_multitrad)))
+
 print (len(test_multisimp), 'ambigous simp char types in the test cases')
+logging.info ( '{0} ambigous simp char types in the test cases'.format(len(test_multisimp),))
 
 
 # In[36]:
 
 
 #store test cases as csv and json
-with open ('../eval/test_cases/simp2multitrad_test', 'w') as f_txt:
+logging.info('storing the test cases')
+with open ('../eval/test_cases/ldc_simp2trad_test', 'w') as f_txt:
 
-    with open('../eval/test_cases/simp2multitrad_test_gold.csv', 'w') as csvfile:
+    with open('../eval/test_cases/ldc_simp2trad_gold.csv', 'w') as csvfile:
         fieldnames = ['orig_char', 'gold_char','char_index','orig','gold','orig_line_num']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
@@ -286,17 +324,22 @@ with open ('../eval/test_cases/simp2multitrad_test', 'w') as f_txt:
 
 
 #delete the test sentences from the corpus to form training dataset
+logging.info('deleting the test cases')
 line_nums=set(trad_testcases+simp_testcases)
-print ('trad lines',len(trad_lines),'simp_lines',len(simp_lines))
+logging.debug ('{0} {1} {2} {3}'.format('trad lines orig',len(trad_lines),'simp_lines orig',len(simp_lines)))
+
+line_no=0
 with open(trad_ouf, 'w') as trad_f:
     with open (simp_ouf,'w') as simp_f:
         for line_num in range(len(trad_lines)):
             if line_num not in line_nums:
                 trad_f.write(trad_lines[line_num])
                 simp_f.write(simp_lines[line_num])
+                line_no+=1
             else:
                 
                 pass
-       
-   
+logging.debug ('{0} {1} {2} {3}'.format('trad lines',line_no,'simp_lines',line_no)) 
+
+ 
 

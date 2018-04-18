@@ -8,14 +8,13 @@ runCLDC
 output/*
 outputDir/
 cldc/data/*
-data/
-raw_data_process_cna_cmn/data/
+data/*
+raw_data_process_cna_cmn/data/*
 *compute-accuracy
 *distance
 *word-analogy
 *word2phrase
 *word2vec
-data/cna_cmn/data/*
 *.ps
 *.out
 *.swp
