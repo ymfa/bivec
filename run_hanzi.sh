@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ $# -lt 5 ]]; then
+if [[ $# -lt 4 ]]; then
   echo "Usage: `basename $0` trainPrefix dim win threads"
   echo "  trainPrefix: Path to training files excluding extensions"
   echo "  dim: Number of vector dimensions"
@@ -19,14 +19,12 @@ if [ ! -d "embeddings" ]; then
   mkdir embeddings
 fi
 
-datetxt=$(date -u +'%m%d%H%M%S')
-echo "./bivec -src-train $trainPrefix.de -tgt-train $trainPrefix.en -size $dim \
-        -src-lang de -tgt-lang en -align $trainPrefix.de-en -align-opt 1 \
-        -output embeddings/out-$win-$dim -cbow 0 -window $win -negative 10 \
-         -threads 8 -iter 5" &>> run_hanzi.sh.log.${datetxt}
-        
-./bivec -src-train $trainPrefix.de -tgt-train $trainPrefix.en -size $dim \
-        -src-lang de -tgt-lang en -align $trainPrefix.de-en -align-opt 1 \
-        -output embeddings/out-$win-$dim -cbow 0 -window $win -negative 10 \
-         -threads 8 -iter 5 &>> run_hanzi.sh.log.${datetxt}
 
+command="./bivec -src-train ${trainPrefix}.de -tgt-train ${trainPrefix}.en -size ${dim} \
+        -src-lang de -tgt-lang en -align ${trainPrefix}.de-en -align-opt 1 \
+        -output embeddings/out-$win-$dim -cbow 0 -window ${win} -negative 10 \
+        -threads ${threads} -iter 5"
+
+
+echo "time ${command}" &> ${logfile}
+time ${command} &>> ${logfile}
