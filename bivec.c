@@ -1330,10 +1330,12 @@ void TrainModel() {
     if(is_bi) print_model_stat(tgt);
 
     // Save
-    SaveVector(output_prefix, src->lang, src, save_opt);
-    if (is_bi) SaveVector(output_prefix, tgt->lang, tgt, save_opt);
+    char output_name[MAX_STRING];
+    sprintf(output_name, "%s.%d", output_prefix, cur_iter);
+    SaveVector(output_name, src->lang, src, save_opt);
+    if (is_bi) SaveVector(output_name, tgt->lang, tgt, save_opt);
 
-    // Eval
+    /* Eval
     if (eval_freq && cur_iter % eval_freq == 0) {
       fprintf(stderr, "\n# eval %d, ", cur_iter); execute("date"); fflush(stderr);
       eval_mono(src->output_file, src->lang, cur_iter);
@@ -1361,7 +1363,7 @@ void TrainModel() {
       //}
 
       fflush(stderr);
-    } // end if eval_freq
+    } */ // end if eval_freq
   } // for cur_iter
 
   // Kmeans
