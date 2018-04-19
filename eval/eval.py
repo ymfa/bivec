@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[2]:
+# In[9]:
 
 
 import sys
@@ -12,8 +12,8 @@ import logging
 
 simp2trad_official='../raw_data_process_cna_cmn/simp2multitrad_official.txt'
 if sys.argv[0]=='/opt/conda/lib/python3.6/site-packages/ipykernel_launcher.py':
-    result='./opencc/sinica_test_opencc_s2tw'
-    gold='./test_cases/sinica_gold.csv'
+    result='./opencc/ldc_simp2trad_test_opencc_s2tw'
+    gold='./test_cases/ldc_simp2trad_gold.csv'
     logging.basicConfig(level=logging.DEBUG)
     logging.info ('result {0} and gold {1}'.format( result,gold))
 else:
@@ -32,14 +32,14 @@ else:
 
 
 
-# In[2]:
+# In[10]:
 
 
 gold_csv = pd.read_csv(gold)
 gold_dict=gold_csv.to_dict('records')
 
 
-# In[3]:
+# In[11]:
 
 
 multi_trad_official=[]
@@ -52,13 +52,13 @@ with open(simp2trad_official) as f:
         multi_trad_official+=trad_chars
 
 
-# In[4]:
+# In[12]:
 
 
-yitizi={'裡':'裏','裏':'裡','衚':'胡', '胡':'衚'}
+yitizi={'裡':'裏','裏':'裡','衚':'胡', '胡':'衚','覆':'復'}
 
 
-# In[5]:
+# In[6]:
 
 
 
