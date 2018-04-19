@@ -43,8 +43,8 @@
 
 #define EXP_TABLE_SIZE 1000
 #define MAX_EXP 6
-#define MAX_SENT_LEN 20000
-#define MAX_WORD_PER_SENT 1000
+#define MAX_SENT_LEN 50000
+#define MAX_WORD_PER_SENT 50000
 #define MAX_CODE_LENGTH 40
 
 const int vocab_hash_size = 30000000;  // Maximum 30 * 0.7 = 21M words in the vocabulary
