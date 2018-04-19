@@ -4,7 +4,6 @@
 git config --global user.email "hey_flora@126.com"
 
 
-apt-get update
 #apt-get install build-essential
 apt-get update && apt-get install procps
 apt-get install vim
