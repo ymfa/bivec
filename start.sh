@@ -19,8 +19,8 @@ apt-get install opencc
 
 # run jupyter
 cd /home/simp2trad/bivec
-if [ ! -d '/root/.jupyter/']; then
-    mkdir /root/.jupyter
+if [ ! -d '/root/.jupyter/' ]; then
+    mkdir /root/.jupyter/
 fi
 cp /home/simp2trad/bivec/jupyter_notebook_config.py /root/.jupyter/
 for pid in $(ps -def | grep jupyter | awk '{print $2}'); do kill -9 $pid; done
