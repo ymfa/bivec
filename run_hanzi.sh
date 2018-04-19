@@ -14,13 +14,13 @@ win=$3
 if [ ! -d "embeddings" ]; then
   mkdir embeddings
 fi
-
-echo "./bivec -src-train ${trainPrefix}.de -tgt-train ${trainPrefix}.en -size ${dim} \
-        -src-lang de -tgt-lang en -align ${trainPrefix}.de-en -align-opt 1 \
-        -output embeddings/out -cbow 0 -window ${win} -negative 10 \
-        -threads 8 -iter 5" &> run_hanzi.sh.log.$(date -u +'%m%d%H%M%S')
+datetxt=$(date -u +'%m%d%H%M%S')
+echo "./bivec -src-train $trainPrefix.de -tgt-train $trainPrefix.en -size $dim \
+        -src-lang de -tgt-lang en -align $trainPrefix.de-en -align-opt 1 \
+        -output embeddings/out-$win-$dim -cbow 0 -window $win -negative 10 \
+         -threads 8 -iter 5" &>> run_hanzi.sh.log.${datetxt}
         
 ./bivec -src-train $trainPrefix.de -tgt-train $trainPrefix.en -size $dim \
         -src-lang de -tgt-lang en -align $trainPrefix.de-en -align-opt 1 \
         -output embeddings/out-$win-$dim -cbow 0 -window $win -negative 10 \
-        -threads 8 -iter 5 &>> run_hanzi.sh.log.$(date -u +'%m%d%H%M%S')
+         -threads 8 -iter 5 &>> run_hanzi.sh.log.${datetxt}
