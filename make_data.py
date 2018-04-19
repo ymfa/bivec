@@ -34,6 +34,7 @@ def filter_vocab(s, vocab):
 def process_file(fin, fout):
   # collect sentences and build vocab
   sentences = []
+  max_num_tokens = 0
   if min_freq: vocab = Counter()
   for i, sentence in enumerate(fin):
     if i % section_size == 0: print('.', end='', flush=True)
@@ -41,6 +42,7 @@ def process_file(fin, fout):
     if sentence:
       if min_freq: vocab.update(sentence)
       sentences.append(sentence)
+      max_num_tokens = max(max_num_tokens, len(sentence))
   if min_freq:
     vocab = set(k for k, v in vocab.items() if v >= min_freq)
     print('vocab size:', len(vocab), end='')
@@ -50,7 +52,7 @@ def process_file(fin, fout):
     if min_freq: sentence = filter_vocab(sentence, vocab)
     else: sentence = ' '.join(sentence)
     fout.write(sentence + '\n')
-  print()
+  print('longest line: ', max_num_tokens)
   return [len(s) for s in sentences]
 
 with open(in_prefix + '.tc', 'r') as fin:
