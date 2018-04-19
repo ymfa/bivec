@@ -18,9 +18,9 @@ fi
 echo "./bivec -src-train ${trainPrefix}.de -tgt-train ${trainPrefix}.en -size ${dim} \
         -src-lang de -tgt-lang en -align ${trainPrefix}.de-en -align-opt 1 \
         -output embeddings/out -cbow 0 -window ${win} -negative 10 \
-        -threads 8 -iter 5"
+        -threads 8 -iter 5" &> run_hanzi.sh.log.$(date -u +'%m%d%H%M%S')
         
 ./bivec -src-train $trainPrefix.de -tgt-train $trainPrefix.en -size $dim \
         -src-lang de -tgt-lang en -align $trainPrefix.de-en -align-opt 1 \
-        -output embeddings/out -cbow 0 -window $win -negative 10 \
-        -threads 8 -iter 5
+        -output embeddings/out-$win-$dim -cbow 0 -window $win -negative 10 \
+        -threads 8 -iter 5 &>> run_hanzi.sh.log.$(date -u +'%m%d%H%M%S')
