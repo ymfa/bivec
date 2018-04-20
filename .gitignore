@@ -60,6 +60,8 @@ raw_data_process_cna_cmn/data/*
 corpora/*
 embeddings/*
 *.log*
+*_error
+*_score
 #python
 data/cna_cmn/.ipynb_checkpoints/*
 data/cna_cmn/.ipynb_checkpoints/extract_test_case.py-checkpoint.ipynb

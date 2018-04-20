@@ -14,6 +14,8 @@ apt-get install opencc
 #export PYTHONSTARTUP='/home/context-embed/context-skipgram/PYTHONSTARTUP.py'
 
 
+#python packages
+conda install gensim
 
 
 
