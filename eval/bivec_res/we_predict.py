@@ -9,9 +9,9 @@ sys.path.append("../../")
 import logging
 from gensim.models import KeyedVectors
 from sklearn.metrics.pairwise import cosine_similarity as cosine
-from make_data import filter_char
 import string
 import pandas as pd
+import re
 
 # IO
 logging.basicConfig(level=logging.DEBUG)
@@ -21,6 +21,7 @@ if sys.argv[0]=='/opt/conda/lib/python3.6/site-packages/ipykernel_launcher.py':
     outvec=1
     win_flag=1
     test_case_f='../test_cases/ldc_simp2trad_gold.csv'
+    filter_nonhanzi=1
 
 else:
     
@@ -35,6 +36,7 @@ else:
         outvec=sys.argv[2]
         win_flag=sys.argv[3]
         test_case_f=sys.argv[4]
+        fiter_nonhanzi=sys.argv[5]
         
 if int(outvec)==0:
     sc_model=tc_model[:-2]+'en'
@@ -44,8 +46,17 @@ elif int(outvec)==1:
 
 model_base=sc_model.split('/')[-1]
 winsize=int(model_base.split('.')[0].split('-')[1])
+if int(filter_nonhanzi)==1:
+    test_case_f_out='filter-{0}_{1}'.format(test_case_f.split('/')[-1].split('.')[0],model_base)
+    def filter_char(s):
+      non_hz = re.compile(r'[^\u3400-\u4DBF\u4E00-\u9FFF\U00020000-\U0002A6DF\U0002A700-\U0002B73F\U0002B740-\U0002B81F\U0002B820-\U0002CEAF\U0002CEB0-\U0002EBEF\uF900-\uFAFF\U0002F800-\U0002FA1F]+')
+      s=non_hz.sub('',s)
+      return s
+else:
+    
+    from make_data import filter_char
 
-test_case_f_out='{0}_{1}'.format(test_case_f.split('/')[-1].split('.')[0],model_base)
+    test_case_f_out='{0}_{1}'.format(test_case_f.split('/')[-1].split('.')[0],model_base)
 
 logging.info ('tc_we fname {0}, sc_we sc fname {1} and win flag is {2}'.format( tc_model,sc_model,win_flag))
 
@@ -101,7 +112,7 @@ def predict(win_size,win_flag,input_sent,position,tc_vectors,sc_vectors,candidat
                     #print (score)
                 except KeyError as e:
                         logging.warning (e)
-
+                        
                         continue
                 score_total+=score
                 
