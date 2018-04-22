@@ -23,7 +23,7 @@ fi
 command="./bivec -src-train ${trainPrefix}.de -tgt-train ${trainPrefix}.en -size ${dim} \
         -src-lang de -tgt-lang en -align ${trainPrefix}.de-en -align-opt 1 \
         -output embeddings/out-$win-$dim -cbow 0 -window ${win} -negative 10 \
-        -threads ${threads} -iter 20"
+        -threads ${threads} -iter 30"
 
 
 echo "time ${command}" &> ${logfile}
