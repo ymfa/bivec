@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[10]:
+# In[2]:
 
 
 import sys
@@ -41,7 +41,7 @@ gold_csv = pd.read_csv(gold)
 gold_dict=gold_csv.to_dict('records')
 
 
-# In[11]:
+# In[5]:
 
 
 multi_trad_official=[]
@@ -52,12 +52,13 @@ with open(simp2trad_official) as f:
         simp_char=line[0]
         trad_chars=list(line[2].replace('～',line[0]))
         multi_trad_official+=trad_chars
+multi_trad_official
 
 
 # In[12]:
 
 
-yitizi={'裡':'裏','裏':'裡','衚':'胡', '胡':'衚','覆':'復'}
+yitizi={'裡':'裏','衚':'胡','覆':'復','畫':'劃'}
 
 
 # In[6]:
@@ -91,24 +92,36 @@ with open(result+'_error', 'w') as error_f:
             trad2simp[char_gold]=char_orig
             num_per_char[char_gold]+=1
 
-
+            if char_gold in yitizi:
+                char_gold=yitizi[char_gold]
+            if char_res in yitizi:
+                char_res=yitizi[char_res]
+                
             if char_gold!=char_res:
+                if char_gold not in multi_trad_official:
+                    logging.warning('gold {1} for {0} not in multi_trad_official. Might be yitizi'.format(char_res,char_gold))
                 
-                if char_res in yitizi:
-                    
-                    if yitizi[char_res]==char_gold:
+#                 
+#                     if char_gold in yitizi:
+#                     if yitizi[char_gold]==char_res:
                         
-                        error_per_char[char_gold]=error_per_char[char_gold]
+#                         error_per_char[char_gold]=error_per_char[char_gold]
                 
-                else:
-                    if char_res not in multi_trad_official:
+#                 if char_res in yitizi:
+                    
+#                     if yitizi[char_res]==char_gold:
+                        
+#                         error_per_char[char_gold]=error_per_char[char_gold]
+                
+                
+                if char_res not in multi_trad_official:
                         logging.warning('{0} for {1} not in multi_trad_official. Might be yitizi'.format(char_res,char_gold))
-                    gold_dict[line_num]['char_res']=char_res
-                    gold_dict[line_num]['res']=line
-                    gold_dict[line_num]['line_num_in_gold']=line_num
-                    writer.writerow(gold_dict[line_num])
-                    num_incor+=1
-                    error_per_char[char_gold]+=1
+                gold_dict[line_num]['char_res']=char_res
+                gold_dict[line_num]['res']=line
+                gold_dict[line_num]['line_num_in_gold']=line_num
+                writer.writerow(gold_dict[line_num])
+                num_incor+=1
+                error_per_char[char_gold]+=1
             else:
                 error_per_char[char_gold]=error_per_char[char_gold]
             line_num+=1 
