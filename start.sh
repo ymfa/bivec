@@ -27,5 +27,5 @@ fi
 cp /home/simp2trad/bivec/jupyter_notebook_config.py /root/.jupyter/
 for pid in $(ps -def | grep jupyter | awk '{print $2}'); do kill -9 $pid; done
 export SHELL=/bin/bash
-jupyter notebook --ip '*'  --port=8888 --allow-root &
+jupyter notebook --ip '*'  --port=8889 --allow-root &
 
