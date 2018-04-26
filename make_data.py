@@ -12,7 +12,7 @@ def filter_char(s):
   s = basic_latin.sub('A', s)
   return s
 
-if __name__ is '__main__':
+if __name__ == '__main__':
 
     if len(sys.argv) < 2:
       print("Usage: ./make_data.py FileNamePrefix [MinFreq]")
