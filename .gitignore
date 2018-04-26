@@ -66,3 +66,4 @@ embeddings/*
 data/cna_cmn/.ipynb_checkpoints/*
 data/cna_cmn/.ipynb_checkpoints/extract_test_case.py-checkpoint.ipynb
 *checkpoint.ipynb
+__pycache__/
