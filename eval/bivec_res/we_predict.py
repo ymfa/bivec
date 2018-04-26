@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[23]:
 
 
 import sys
@@ -17,7 +17,7 @@ import re
 logging.basicConfig(level=logging.DEBUG)
 
 if sys.argv[0]=='/opt/conda/lib/python3.6/site-packages/ipykernel_launcher.py':
-    tc_model='../../embeddings/out-5-50.3.de'
+    tc_model='../../embeddings/out-2-100.19.de'
     outvec=1
     win_flag=1
     test_case_f='../test_cases/ldc_simp2trad_gold.csv'
@@ -36,7 +36,7 @@ else:
         outvec=sys.argv[2]
         win_flag=sys.argv[3]
         test_case_f=sys.argv[4]
-        fiter_nonhanzi=sys.argv[5]
+        filter_nonhanzi=sys.argv[5]
         
 if int(outvec)==0:
     sc_model=tc_model[:-2]+'en'
@@ -62,7 +62,7 @@ logging.info ('tc_we fname {0}, sc_we sc fname {1} and win flag is {2}'.format( 
 
 
 
-# In[2]:
+# In[24]:
 
 
 # process the we files
@@ -74,12 +74,48 @@ tc_vectors = KeyedVectors.load_word2vec_format(tc_model, binary=False)
 
 
 
+# In[28]:
+
+
+import numpy
+
+numpy.dot(tc_vectors['雲'], sc_vectors['的'])
+
+
+# In[30]:
+
+
+def sent_seg(sent):
+    sent_list=re.findall(r'[^！。？!?\n]+(?:[！。？!?\n])*', sent)
+    return sent_list
+
+def extract_sent(input_sent,position):
+    sent_lst=sent_seg(input_sent)
+    start_i=0
+    end_i=0
+    for sent in sent_lst:
+        end_i+=len(sent)
+        if position >=start_i and position < end_i:
+            if len(filter_char(sent))<=1:
+                return input_sent,position
+            else:
+                position=position-start_i
+
+                return sent,position
+        else:
+            start_i+=len(sent)
+
+
+
 # In[12]:
 
 
 
 
+        
 def predict(win_size,win_flag,input_sent,position,tc_vectors,sc_vectors,candidates):
+    input_sent_orig=input_sent
+    input_sent,position=extract_sent(input_sent,position)
     before=filter_char(input_sent[0:position])
     after=filter_char(input_sent[position+1:len(input_sent)])
     input_sent=before+input_sent[position]+after
@@ -121,7 +157,7 @@ def predict(win_size,win_flag,input_sent,position,tc_vectors,sc_vectors,candidat
         try:
             score_dict[candi]=score_total/num_contextw
         except ZeroDivisionError as e:
-            logging.warning(e)
+            logging.warning('sent {0},error is {1}'.format(input_sent_orig,e))
             continue
     sort_key=sorted(score_dict.items(),key=lambda x:x[1], reverse=True)
     return '-'.join([str(res[0])+':'+str(res[1]) for res in sort_key])
