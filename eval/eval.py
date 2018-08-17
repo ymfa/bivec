@@ -61,6 +61,15 @@ multi_trad_official
 yitizi={'裡':'裏','衚':'胡','覆':'復','畫':'劃'}
 
 
+# In[4]:
+
+
+a=[1,2,3]
+b=[2,3,4]
+c=list(zip(a,b))
+c
+
+
 # In[6]:
 
 
@@ -82,49 +91,50 @@ with open(result+'_error', 'w') as error_f:
         writer.writeheader()
         for line in res_f:
             line=line.rstrip()
-            char_i=gold_csv['char_index'][line_num]
-            char_gold=gold_csv['gold_char'][line_num]
-            if model=='opencc':
-                char_res=line[char_i]
-            elif model=='we':
-                char_res=line[0]
-            char_orig=gold_csv['orig_char'][line_num]
-            trad2simp[char_gold]=char_orig
-            num_per_char[char_gold]+=1
+            char_is=[i for i in gold_csv['char_index'][line_num].split('-') if i!='']
+            char_golds=[i for i in gold_csv['gold_char'][line_num].split('-') if i!='']
+            for char_i,char_gold in list(zip(char_is,char_golds)):
+                if model=='opencc':
+                    char_res=line[char_i]
+                elif model=='we':
+                    char_res=line[0]
+                char_orig=gold_csv['orig_char'][line_num]
+                trad2simp[char_gold]=char_orig
+                num_per_char[char_gold]+=1
 
-            if char_gold in yitizi:
-                char_gold=yitizi[char_gold]
-            if char_res in yitizi:
-                char_res=yitizi[char_res]
-                
-            if char_gold!=char_res:
-                if char_gold not in multi_trad_official:
-                    logging.warning('gold {1} for {0} not in multi_trad_official. Might be yitizi'.format(char_res,char_gold))
-                
-#                 
-#                     if char_gold in yitizi:
-#                     if yitizi[char_gold]==char_res:
-                        
-#                         error_per_char[char_gold]=error_per_char[char_gold]
-                
-#                 if char_res in yitizi:
-                    
-#                     if yitizi[char_res]==char_gold:
-                        
-#                         error_per_char[char_gold]=error_per_char[char_gold]
-                
-                
-                if char_res not in multi_trad_official:
-                        logging.warning('{0} for {1} not in multi_trad_official. Might be yitizi'.format(char_res,char_gold))
-                gold_dict[line_num]['char_res']=char_res
-                gold_dict[line_num]['res']=line
-                gold_dict[line_num]['line_num_in_gold']=line_num
-                writer.writerow(gold_dict[line_num])
-                num_incor+=1
-                error_per_char[char_gold]+=1
-            else:
-                error_per_char[char_gold]=error_per_char[char_gold]
-            line_num+=1 
+                if char_gold in yitizi:
+                    char_gold=yitizi[char_gold]
+                if char_res in yitizi:
+                    char_res=yitizi[char_res]
+
+                if char_gold!=char_res:
+                    if char_gold not in multi_trad_official:
+                        logging.warning('gold {1} for {0} not in multi_trad_official. Might be yitizi'.format(char_res,char_gold))
+
+    #                 
+    #                     if char_gold in yitizi:
+    #                     if yitizi[char_gold]==char_res:
+
+    #                         error_per_char[char_gold]=error_per_char[char_gold]
+
+    #                 if char_res in yitizi:
+
+    #                     if yitizi[char_res]==char_gold:
+
+    #                         error_per_char[char_gold]=error_per_char[char_gold]
+
+
+                    if char_res not in multi_trad_official:
+                            logging.warning('{0} for {1} not in multi_trad_official. Might be yitizi'.format(char_res,char_gold))
+                    gold_dict[line_num]['char_res']=char_res
+                    gold_dict[line_num]['res']=line
+                    gold_dict[line_num]['line_num_in_gold']=line_num
+                    writer.writerow(gold_dict[line_num])
+                    num_incor+=1
+                    error_per_char[char_gold]+=1
+                else:
+                    error_per_char[char_gold]=error_per_char[char_gold]
+                line_num+=1 
             
 with open(result+'_score','w') as score_f:
     fieldnames_score=['char_gold',"char_orig",'error_num','total']
